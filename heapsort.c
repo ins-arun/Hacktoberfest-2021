@@ -1,99 +1,68 @@
 /*Program to demonstrate the heap sort algorithm to sort an array using max heap*/
 
-#include<stdio.h>
-#include<math.h>
-main()
-{
-      int a[100],n,i,lb,ub;
-      void swap(int*,int*);
-      void heapsort(int[],int,int);
-      printf("Enter number of elements:");
-      scanf("%d",&n);
-      lb=0;
-      ub=n-1;
-      printf("Enter the elements:\n");
-      for(i=0;i<n;i++)
-                      scanf("%d",&a[i]);
-      heapsort(a,lb,ub);
-      printf("The sorted array is:\n");
-      for(i=0;i<n;i++)
-                      printf("%d\t",a[i]);
-      getch();
-}
-                       
-void swap(int*p,int*q)
-{
-	int temp;
-	temp=*p;
-	*p=*q;
-	*q=temp;
-}
-      
+// C++ program for implementation of Heap Sort
+#include <iostream>
 
-void heapsort(int a[],int lb,int ub)
+using namespace std;
+
+// To heapify a subtree rooted with node i which is
+// an index in arr[]. n is size of heap
+void heapify(int arr[], int n, int i)
 {
-	int i;
-	void create_heap(int[],int,int,int,int);
-	void del_heap(int[],int,int,int);
-	for(i=lb;i<=ub;i++)
-	{
-		create_heap(a,i,a[i],lb,ub);
-	}
-	i=ub;
-	while(i>=lb)
-	{
-		del_heap(a,i+1,lb,ub);
-		i--;
+	int largest = i; // Initialize largest as root
+	int l = 2 * i + 1; // left = 2*i + 1
+	int r = 2 * i + 2; // right = 2*i + 2
+
+	// If left child is larger than root
+	if (l < n && arr[l] > arr[largest])
+		largest = l;
+
+	// If right child is larger than largest so far
+	if (r < n && arr[r] > arr[largest])
+		largest = r;
+
+	// If largest is not root
+	if (largest != i) {
+		swap(arr[i], arr[largest]);
+
+		// Recursively heapify the affected sub-tree
+		heapify(arr, n, largest);
 	}
 }
 
-void create_heap(int a[],int heapsize,int data,int lb,int ub)
+// main function to do heap sort
+void heapSort(int arr[], int n)
 {
-	int i,p;
-	int parent(int);
-	i=lb+heapsize;
-	a[i]=data;
-	while(i>lb&&a[p=parent(i)]<a[i])
-	{
-		swap(&a[p],&a[i]);
-		i=p;
+	// Build heap (rearrange array)
+	for (int i = n / 2 - 1; i >= 0; i--)
+		heapify(arr, n, i);
+
+	// One by one extract an element from heap
+	for (int i = n - 1; i > 0; i--) {
+		// Move current root to end
+		swap(arr[0], arr[i]);
+
+		// call max heapify on the reduced heap
+		heapify(arr, i, 0);
 	}
 }
 
-void del_heap(int a[],int heapsize,int lb,int ub)
+/* A utility function to print array of size n */
+void printArray(int arr[], int n)
 {
-	int data,i,l,r,max_child;
-	int left(int);
-	int right(int);
-	swap(&a[lb],&a[heapsize-1]);
-	i=lb;
-	heapsize--;
-	while(1)
-	{
-		if((l=left(i))>=heapsize)
-			break;
-		if((r=right(i))>=heapsize)
-			max_child=l;
-		else
-			max_child=(a[l]>a[r])?l:r;
-		if(a[i]>=a[max_child])
-			break;
-		swap(&a[i],&a[max_child]);
-		i=max_child;
-	}
+	for (int i = 0; i < n; ++i)
+		cout << arr[i] << " ";
+	cout << "\n";
 }
 
-int parent(int i)
+// Driver code
+int main()
 {
-	float p;
-	p=((float)i/2.0)-1.0;
-	return ceil(p);
-}
-int left(int i)
-{
-	return 2*i+1;
-}
-int right(int i)
-{
-	return 2*i+2;
+	int arr[] = { 12, 11, 13, 5, 6, 7 };
+	int n = sizeof(arr) / sizeof(arr[0]);
+
+	heapSort(arr, n);
+
+	cout << "Sorted array is \n";
+	printArray(arr, n);
 }
